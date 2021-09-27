@@ -26,7 +26,7 @@ def algoritmoCodo():
 #por curiosidad miramos cuantos clusters nos sugiere el algoritmo del codo
 #algoritmoCodo()
 
-
+#esto es un cambio
 
 #pasamos todo a un array bidimensional para que podamos hacer el fit
 index=np.array(range(0,len(emg)))
