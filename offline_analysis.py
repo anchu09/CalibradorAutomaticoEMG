@@ -3,9 +3,11 @@ from sklearn.cluster import KMeans
 
 
 xi = np.loadtxt("prueba1_features.txt")
-emg=xi[25:50,-1]
+
+#me quedo solo con la columna importante
+xi=xi[:,-1]
 import matplotlib.pyplot as plt
-plt.scatter(range(0,len(emg)),emg)
+#plt.scatter(range(0,len(xi)),xi)
 
 
 def algoritmoCodo():
@@ -26,37 +28,43 @@ def algoritmoCodo():
 #por curiosidad miramos cuantos clusters nos sugiere el algoritmo del codo
 #algoritmoCodo()
 
-#esto es un cambio
 
 #pasamos todo a un array bidimensional para que podamos hacer el fit
-index=np.array(range(0,len(emg)))
-c=np.empty((emg.size+index.size,),dtype=emg.dtype)
-datatonormalize = np.reshape(c, (-1,2))
+#index=np.array(range(0,len(xi)))
+#c=np.empty((xi.size+index.size,),dtype=xi.dtype)
+#datatonormalize = np.reshape(c, (-1,2))
 
+#xi=xi.reshape(len(xi),1)
+datatonormalize = xi.reshape(-1, 1)
 #escalamiento de los datos
 from sklearn import preprocessing
-data_escalada= preprocessing.Normalizer().fit_transform(datatonormalize)
+
+# defalult (axis =1) en nuestro caso axis=0 para el eje y
+#data_escalada= preprocessing.Normalizer().fit_transform(datatonormalize)
+data_escalada= preprocessing.normalize(datatonormalize,axis=0)
+
+
 #determinamos las variables a evaluar 
 xescalado=data_escalada.copy()
 xsinescalar=datatonormalize.copy()
 
 algoritmo= KMeans(n_clusters=2, init='k-means++', max_iter=300, n_init=10)
-algoritmo.fit(xsinescalar)##### xsinescalar o xescalado
+algoritmo.fit(xescalado)##### xsinescalar o xescalado
 centroides, etiquetas= algoritmo.cluster_centers_, algoritmo.labels_
-muestra_predicciones=algoritmo.predict(datatonormalize)####datatornomalize o data_escalada
+muestra_predicciones=algoritmo.predict(data_escalada)####datatornomalize o data_escalada
 
 for i, pred in enumerate(muestra_predicciones):
     print("muestra", i, "se encuentra en el cluster:", pred)
 
   
 from sklearn.decomposition import PCA
-modelo_pca = PCA(n_components = 2)
-modelo_pca.fit(xsinescalar)###### xsinescalar o xescalado
-pca = modelo_pca.transform(xsinescalar) ###### xsinescalar o xescalado
+modelo_pca = PCA(n_components = 2, svd_solver='full')
+modelo_pca.fit(xescalado)###### xsinescalar o xescalado
+pca = modelo_pca.transform(xescalado) ###### xsinescalar o xescalado
 #Se aplicar la reducción de dimsensionalidad a los centroides
 centroides_pca = modelo_pca.transform(centroides)
 # Se define los colores de cada clúster
-colores = ['blue', 'red']
+colores = ['red','blue']
 #Se asignan los colores a cada clústeres
 colores_cluster = [colores[etiquetas[i]] for i in range(len(pca))]
 #Se grafica los componentes PCA
