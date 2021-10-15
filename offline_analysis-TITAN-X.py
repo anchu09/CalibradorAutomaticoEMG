@@ -83,7 +83,8 @@ plt.show()
 
 plt.figure()
 plt.scatter(np.arange(xi.shape[0]), xi[:, 0],c=colores_cluster)
-from sklearn.metrics import davies_bouldin_score
 
-db_index = davies_bouldin_score(xi, etiquetas)
+#evaluacion del algoritmo
+from sklearn.metrics import davies_bouldin_score
+db_index = davies_bouldin_score(xi,etiquetas)
 print(db_index)
