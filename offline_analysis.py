@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.cluster import KMeans
 
+from sklearn.decomposition import PCA
 
 xi = np.loadtxt("prueba1_features.txt")
 
@@ -43,12 +44,16 @@ data_escalada= preprocessing.normalize(xi,axis=0)
 
 
 #determinamos las variables a evaluar 
-xescalado=data_escalada.copy()
-xsinescalar=xi.copy()
+data_escalada=np.log(0.0000000001+data_escalada)
 
+
+#aplicamos reducción de dimensionalidad
+pca= PCA(n_components=1)
+pca.fit(data_escalada)
+data_escalada=pca.transform(data_escalada)
 
 algoritmo= KMeans(n_clusters=2, init='k-means++', max_iter=300, n_init=10)
-algoritmo.fit(xescalado)##### xsinescalar o xescalado
+algoritmo.fit(data_escalada)##### xsinescalar o xescalado
 centroides, etiquetas= algoritmo.cluster_centers_, algoritmo.labels_
 muestra_predicciones=algoritmo.predict(data_escalada)####datatornomalize o data_escalada
 
@@ -56,34 +61,20 @@ for i, pred in enumerate(muestra_predicciones):
     print("muestra", i, "se encuentra en el cluster:", pred)
 
   
-from sklearn.decomposition import PCA
-modelo_pca = PCA(n_components = 2, svd_solver='full')
-modelo_pca.fit(xescalado)###### xsinescalar o xescalado
-pca = modelo_pca.transform(xescalado) ###### xsinescalar o xescalado
-#Se aplicar la reducción de dimsensionalidad a los centroides
-centroides_pca = modelo_pca.transform(centroides)
+
 # Se define los colores de cada clúster
 colores = ['red','blue']
 #Se asignan los colores a cada clústeres
-colores_cluster = [colores[etiquetas[i]] for i in range(len(pca))]
-#Se grafica los componentes PCA
-plt.scatter(pca[:, 0], pca[:, 1], c = colores_cluster, 
-            marker = 'o',alpha = 0.4)
-#Se grafican los centroides
-plt.scatter(centroides_pca[:, 0], centroides_pca[:, 1],
-            marker = 'x', s = 100, linewidths = 3, c = colores)
-#Se guadan los datos en una variable para que sea fácil escribir el código
-xvector = modelo_pca.components_[0] * max(pca[:,0])
-yvector = modelo_pca.components_[1] * max(pca[:,1])
-
+colores_cluster = [colores[etiquetas[i]] for i in range(len(data_escalada))]
 
  
 plt.show()  
 
 
 plt.figure()
-plt.scatter(np.arange(xi.shape[0]), xi[:, 0],c=colores_cluster)
+plt.scatter(np.arange(data_escalada.shape[0]), data_escalada[:, 0],c=colores_cluster)
+
 from sklearn.metrics import davies_bouldin_score
 
-db_index = davies_bouldin_score(xi, etiquetas)
+db_index = davies_bouldin_score(data_escalada, etiquetas)
 print(db_index)

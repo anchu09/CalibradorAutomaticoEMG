@@ -7,6 +7,7 @@ Created on Fri Oct  1 18:33:47 2021
 
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.decomposition import PCA
 
 xi= np.loadtxt("prueba1_features.txt")
 
@@ -29,19 +30,26 @@ from sklearn.cluster import AgglomerativeClustering
 algoritmo= AgglomerativeClustering(n_clusters=2, affinity='euclidean', linkage='ward')
 #affinity: medidas de distancia, en nuestro caso la euclideana. Es la unica aceptada si utilizamos ward
 #linkage: medidas de vinculacion. Guard junta clusters minimizando la varianza 
+
+
+
+
+xi=np.log(0.0000000001+xi)
+
+#aplicamos reducción de dimensionalidad
+pca= PCA(n_components=1)
+pca.fit(xi)
+xi=pca.transform(xi)
+
 algoritmo.fit(xi)
 etiquetas= algoritmo.labels_
 
 
-from sklearn.decomposition import PCA
-modelo_pca = PCA(n_components = 2, svd_solver='full')
-modelo_pca.fit(xi)###### xsinescalar o xescalado
-pca = modelo_pca.transform(xi) ###### xsinescalar o xescalado
-#Se aplicar la reducción de dimsensionalidad a los centroides
+
 # Se define los colores de cada clúster
 colores = ['red','blue']
 #Se asignan los colores a cada clústeres
-colores_cluster = [colores[etiquetas[i]] for i in range(len(pca))]
+colores_cluster = [colores[etiquetas[i]] for i in range(len(xi))]
  
 plt.show()  
 
