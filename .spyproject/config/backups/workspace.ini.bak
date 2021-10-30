@@ -6,5 +6,5 @@ save_non_project_files = False
 
 [main]
 version = 0.2.0
-recent_files = ['run_featurizers.py', 'agrupamientoJerarquico.py', 'offline_analysis.py', 'GaussianMixtureM.py']
+recent_files = ['run_featurizers.py', 'agrupamientoJerarquico.py', 'offline_analysis.py', 'GaussianMixtureM.py', 'prueba1_features.txt', '..\\..\\..\\..\\..\\..\\.spyder-py3\\autosave\\offline_analysis.py', 'offline_analysis-TITAN-X.py', 'emg_features.py', '..\\..\\..\\..\\..\\..\\anaconda3\\lib\\site-packages\\sklearn\\utils\\validation.py']
 

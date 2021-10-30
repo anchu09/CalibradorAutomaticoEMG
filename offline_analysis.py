@@ -52,7 +52,7 @@ pca= PCA(n_components=1)
 pca.fit(data_escalada)
 data_escalada=pca.transform(data_escalada)
 
-algoritmo= KMeans(n_clusters=2, init='k-means++', max_iter=300, n_init=10)
+algoritmo= KMeans(n_clusters=2, init='k-means++', max_iter=300, n_init=100)
 algoritmo.fit(data_escalada)##### xsinescalar o xescalado
 centroides, etiquetas= algoritmo.cluster_centers_, algoritmo.labels_
 muestra_predicciones=algoritmo.predict(data_escalada)####datatornomalize o data_escalada
