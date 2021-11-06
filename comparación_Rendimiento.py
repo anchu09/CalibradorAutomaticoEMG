@@ -96,9 +96,9 @@ def puntuacion(x, gaus, red_dim,clustering_type):
         
     db_index = davies_bouldin_score(X_test, predicciones)
    
-    # plt.scatter(np.arange(X_test.shape[0]), X_test[:, 0],c=colores_cluster)
+    plt.scatter(np.arange(X_test.shape[0]), X_test[:, 0],c=colores_cluster)
     
-    # plt.show()
+    plt.show()
 
     return db_index
 
