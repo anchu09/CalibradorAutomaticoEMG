@@ -1,0 +1,7 @@
+pyserial
+bitalino
+PyBluez
+python-xlib
+pyqtgraph
+PyAutoGUI
+tk

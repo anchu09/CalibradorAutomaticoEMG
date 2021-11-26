@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 def algoritmoCodo():
     inercia=[]
-    for i in range(1,20):
+    for i in range(1,8):
         algoritmo= KMeans(n_clusters=i, init ='k-means++', max_iter=300, n_init=10)
         algoritmo.fit(xi)
         #para cada k se calcula la suma total del cuadrado dentro del cluster
@@ -21,11 +21,11 @@ def algoritmoCodo():
     plt.title('método del codo')
     plt.xlabel('nº de cluster')
     plt.ylabel('inercia')
-    plt.plot(list(range(1,20)), inercia, marker='o')
+    plt.plot(list(range(1,8)), inercia, marker='o')
     plt.show()
     
 #por curiosidad miramos cuantos clusters nos sugiere el algoritmo del codo
-#algoritmoCodo()
+algoritmoCodo()
 
 
 #pasamos todo a un array bidimensional para que podamos hacer el fit

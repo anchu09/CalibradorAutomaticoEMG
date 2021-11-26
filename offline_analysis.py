@@ -40,17 +40,18 @@ from sklearn import preprocessing
 
 # defalult (axis =1) en nuestro caso axis=0 para el eje y
 #data_escalada= preprocessing.Normalizer().fit_transform(datatonormalize)
-data_escalada= preprocessing.normalize(xi,axis=0)
+#data_escalada= preprocessing.normalize(xi,axis=0)
+data_escalada= xi
 
 
 #determinamos las variables a evaluar 
-data_escalada=np.log(0.0000000001+data_escalada)
+#data_escalada=np.log(0.0000000001+data_escalada)
 
 
 #aplicamos reducción de dimensionalidad
-pca= PCA(n_components=1)
-pca.fit(data_escalada)
-data_escalada=pca.transform(data_escalada)
+#pca= PCA(n_components=1)
+#pca.fit(data_escalada)
+#data_escalada=pca.transform(data_escalada)
 
 algoritmo= KMeans(n_clusters=2, init='k-means++', max_iter=300, n_init=100)
 algoritmo.fit(data_escalada)##### xsinescalar o xescalado
