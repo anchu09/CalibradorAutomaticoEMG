@@ -12,6 +12,11 @@ import pyautogui
 import scipy.signal as sig
 from bitalino import BITalino
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from sklearn.mixture import GaussianMixture
+from sklearn.decomposition import PCA
+from sklearn import preprocessing
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
 
 import emg_features
 
@@ -56,6 +61,8 @@ class DinoApp:
         self.has_trained = False
         self.threshold = None
         self.MAX_THRESHOLD = 20
+        self.pca=0
+        self.gmm=0
         # Main app
         self.plotted_signals = []
         self.figure, self.ax = self._init_figure(max_samples, n_samples, plt_interval)
@@ -75,14 +82,31 @@ class DinoApp:
             self.unsupervised_sem.acquire()
             # TODO: UNSUPERVISED ANALYSIS GOES HERE TO SET SENSIBILITY
             train_data = np.stack(self.train_data, axis=0)
+            train_data=preprocessing.minmax_scale(train_data)
+            train_data=np.log(0.0000001+train_data)
+            self.pca= PCA(n_components=1)
+            self.gmm=GaussianMixture(n_components=2, covariance_type="full", n_init=100)
+            train_data = self.pca.fit_transform(train_data)
+            self.gmm.fit(train_data)
+            if self.gmm.means_[0,0] > self.gmm.means_[1, 0]:
+                self.jumplabel = 0
+            else:
+                self.jumplabel = 1
             print(f"Train data shape = {train_data.shape}")
             # legacy: self.threshold_bar.set(0.5)
             self.has_trained = True
             # legacy: print('new threshold is {}'.format(self.threshold_bar.get()))
 
     def predict(self, features):
-        # TODO: code for prediction here
-        return 0
+       test_data=features.reshape(-1, len(self.featurizers))
+       scaler = MinMaxScaler()
+       scaler.fit(test_data)
+       scaler.transform(test_data)
+       test_data=np.log(0.0000001+test_data)
+       test_data=self.pca.transform(test_data)
+       predictions=self.gmm.predict(test_data)
+       return predictions 
+
 
     def do_play(self):
         while True:
@@ -90,10 +114,13 @@ class DinoApp:
             if not self.has_trained:
                 Tk.messagebox.showinfo("Error!", "Model has not been trained")
                 playing = False
+            else:
+                playing= True
             while playing:
-                # LEGACY: if self.predict(self.features[-1]) >= self.threshold.get():
+                # LEGACY: if self.predict(self.features[-1]) >= self.threshold.get(): QUE HAGO CON ESTO??
                 # TODO: this should be changed (Right now it is assuming that 1 is the jump class)
-                if self.predict(self.features[-1]) == 1:
+                if self.predict(self.features[-1]) == self.jumplabel:
+                        print("hlaaaaaa")
                         pyautogui.press('space')
 
     def _add_buttons(self):

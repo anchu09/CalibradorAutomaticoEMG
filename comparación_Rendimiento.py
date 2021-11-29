@@ -88,7 +88,6 @@ def puntuacion(x, gaus, red_dim,clustering_type):
   
     predicciones=algoritmo.predict(X_test)
 
- 
     colores = ['red','blue']
     
     colores_cluster = [colores[predicciones[i]] for i in range(len(X_test))]
