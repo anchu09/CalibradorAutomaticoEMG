@@ -120,7 +120,6 @@ class DinoApp:
                 # LEGACY: if self.predict(self.features[-1]) >= self.threshold.get(): QUE HAGO CON ESTO??
                 # TODO: this should be changed (Right now it is assuming that 1 is the jump class)
                 if self.predict(self.features[-1]) == self.jumplabel:
-                        print("hlaaaaaa")
                         pyautogui.press('space')
 
     def _add_buttons(self):
