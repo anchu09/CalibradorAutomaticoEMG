@@ -4,6 +4,7 @@ import tkinter as Tk
 from collections import deque
 from threading import Thread, Semaphore
 from tkinter.ttk import Frame
+import time
 
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
@@ -62,6 +63,7 @@ class DinoApp:
         self.threshold = None
         self.MAX_THRESHOLD = 20
         self.pca=0
+        self.scaler = MinMaxScaler()
         self.gmm=0
         # Main app
         self.plotted_signals = []
@@ -82,7 +84,9 @@ class DinoApp:
             self.unsupervised_sem.acquire()
             # TODO: UNSUPERVISED ANALYSIS GOES HERE TO SET SENSIBILITY
             train_data = np.stack(self.train_data, axis=0)
-            train_data=preprocessing.minmax_scale(train_data)
+            #train_data=preprocessing.minmax_scale(train_data)
+            self.scaler.fit(train_data)
+            self.scaler.transform(train_data)
             train_data=np.log(0.0000001+train_data)
             self.pca= PCA(n_components=1)
             self.gmm=GaussianMixture(n_components=2, covariance_type="full", n_init=100)
@@ -99,9 +103,9 @@ class DinoApp:
 
     def predict(self, features):
        test_data=features.reshape(-1, len(self.featurizers))
-       scaler = MinMaxScaler()
-       scaler.fit(test_data)
-       scaler.transform(test_data)
+       #scaler = MinMaxScaler()
+       #scaler.fit(test_data)
+       self.scaler.transform(test_data)
        test_data=np.log(0.0000001+test_data)
        test_data=self.pca.transform(test_data)
        predictions=self.gmm.predict(test_data)
@@ -121,6 +125,7 @@ class DinoApp:
                 # TODO: this should be changed (Right now it is assuming that 1 is the jump class)
                 if self.predict(self.features[-1]) == self.jumplabel:
                         pyautogui.press('space')
+                        time.sleep(0.1)
 
     def _add_buttons(self):
         self.start_training_button = Tk.Button(self.app, text="Start training", command=self.change_training)

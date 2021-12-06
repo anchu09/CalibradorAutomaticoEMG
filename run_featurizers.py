@@ -33,9 +33,7 @@ if __name__ == "__main__":
         np.std,
         lambda x: emg_features.crossing_rate(x, reference_level=args.reference_level),
         lambda x: emg_features.turns_count(x, reference_level=args.reference_level),
-        lambda x: full_wr(x)[-1],
-        lambda x: half_wr(x)[-1],
-        lambda x: np.sqrt(np.sum(np.diff(x) ** 2))
+        #lambda x: np.sqrt(np.sum(np.diff(x) ** 2))
     ]
 
     emg = read_emg(args.filename)
