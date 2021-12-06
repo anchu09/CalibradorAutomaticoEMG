@@ -43,8 +43,6 @@ class DinoApp:
         self.window = sig.get_window("hamming", n_samples)
         self.featurizers = [
             np.std,
-            lambda x: emg_features.crossing_rate(x, reference_level=0.2),
-            lambda x: emg_features.turns_count(x, reference_level=0.2),
             lambda x: np.sqrt(np.sum(np.diff(x) ** 2))
         ]
         # Bitalino and buffers
@@ -103,8 +101,7 @@ class DinoApp:
 
     def predict(self, features):
        test_data=features.reshape(-1, len(self.featurizers))
-       #scaler = MinMaxScaler()
-       #scaler.fit(test_data)
+
        self.scaler.transform(test_data)
        test_data=np.log(0.0000001+test_data)
        test_data=self.pca.transform(test_data)
@@ -121,11 +118,12 @@ class DinoApp:
             else:
                 playing= True
             while playing:
+                time.sleep(0.1)
                 # LEGACY: if self.predict(self.features[-1]) >= self.threshold.get(): QUE HAGO CON ESTO??
                 # TODO: this should be changed (Right now it is assuming that 1 is the jump class)
                 if self.predict(self.features[-1]) == self.jumplabel:
                         pyautogui.press('space')
-                        time.sleep(0.1)
+                        time.sleep(0.5)
 
     def _add_buttons(self):
         self.start_training_button = Tk.Button(self.app, text="Start training", command=self.change_training)
